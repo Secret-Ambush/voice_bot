@@ -1,0 +1,6 @@
+devel_space: /home/user/catkin_ws/src/voice_controlled_bot/devel
+install: false
+install_space: /home/user/catkin_ws/src/voice_controlled_bot/install
+profile: default
+source_space: /home/user/catkin_ws/src/voice_controlled_bot/src
+workspace: /home/user/catkin_ws/src/voice_controlled_bot

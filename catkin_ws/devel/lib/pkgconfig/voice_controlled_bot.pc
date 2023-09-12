@@ -1,0 +1,8 @@
+prefix=/home/user/catkin_ws/devel
+
+Name: voice_controlled_bot
+Description: Description of voice_controlled_bot
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

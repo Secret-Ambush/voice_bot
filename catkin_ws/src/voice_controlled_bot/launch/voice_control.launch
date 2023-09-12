@@ -1,0 +1,10 @@
+<launch>
+  <!-- Start the microphone driver (adjust parameters as needed) -->
+  <!-- <node pkg="audio_common" type="audio_capture" name="audio_capture" output="screen">
+    <param name="device" type="string" value="/dev/audio"/>
+  </node> -->
+
+  <!-- Start the speech recognition node -->
+  <node pkg="voice_controlled_bot" type="voice_control.py" name="voice_commands" output="screen">
+  </node>
+</launch>
