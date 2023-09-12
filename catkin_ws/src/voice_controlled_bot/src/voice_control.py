@@ -68,8 +68,7 @@ def stop_robot():
 
 if __name__ == '__main__':
     rospy.init_node('voice_commands', anonymous=True)
-    text_publisher = rospy.Publisher(
-        '/recognized_text', String, queue_size=10)  # Publish recognized text
+    text_publisher = rospy.Publisher( '/recognized_text', String, queue_size=10)  # Publish recognized text
     
     # Create a timer that calls speech_to_text_callback every 2 seconds
     timer = rospy.Timer(rospy.Duration(2), speech_to_text_callback)
