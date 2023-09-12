@@ -132,6 +132,6 @@ if __name__ == '__main__':
 - Ensure that the appropriate ROS topics (`/recognized_text` and `/cmd_vel`) are available and match the topics used in the script.
 
 That's it! You now have a voice-controlled robot using ROS and Python.
-```
 
-Please note that you should customize the handling of specific voice commands within the `process_voice_command` function to match the behavior of your robot. Additionally, make sure that the ROS topics used in the script (`/recognized_text` and `/cmd_vel`) are correctly configured for your robot's setup.
+
+Please note that you should customize the handling of specific voice commands within the `process_voice_command` function to match the behaviour of your robot. Additionally, make sure that the ROS topics used in the script (`/recognized_text` and `/cmd_vel`) are correctly configured for your robot's setup.
