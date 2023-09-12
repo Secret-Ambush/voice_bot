@@ -17,8 +17,6 @@ The Python script (`voice_control.py`) listens to voice commands from a micropho
 ### Importing Dependencies
 
 ```python
-#!/usr/bin/env python
-
 import rospy
 from std_msgs.msg import String
 import speech_recognition as sr
@@ -119,7 +117,7 @@ if __name__ == '__main__':
 
 2. Install the required Python libraries, including `speech_recognition`.
 
-3. Run the script using `rosrun` or `python`.
+3. Run the script using `rosrun`.
 
 4. The script will listen to your voice commands and control the robot accordingly.
 
