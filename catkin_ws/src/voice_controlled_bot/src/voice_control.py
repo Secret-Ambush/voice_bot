@@ -29,8 +29,9 @@ def speech_to_text_callback(event):
         
     # rospy.sleep(2)  # Sleep for 2 seconds
 
-def process_voice_command(text):
+def process_voice_command(text_msg):
     global motion_command, motion_publisher
+    text = text_msg.data
 
     if "left" in text:
         rospy.loginfo("Command: Left")
