@@ -16,7 +16,7 @@ def speech_to_text_callback(event):
 
     try:
         with sr.Microphone() as source:
-            audio = r.listen(source)
+            audio = r.listen(source, timeout = 2)
             text = r.recognize_google(audio)
             rospy.loginfo("Recognized text: %s", text)
             text_publisher.publish(text)  # Publish the recognized text
