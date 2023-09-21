@@ -17,7 +17,7 @@ def speech_to_text_callback(event):
     try:
         with sr.Microphone() as source:
             print("Listening: ")
-            audio = r.listen(source, timeout = 2)
+            audio = r.listen(source, timeout = 2) #2 seconds timeout
             print("Processing: ")
             text = r.recognize_google(audio)
             print(text)
