@@ -13,14 +13,15 @@ def speech_to_text_callback(event):
     global text_publisher  # Declare text_publisher as global
 
     r = sr.Recognizer()
+    r.grammar = text_grammar
 
     try:
         with sr.Microphone() as source:
 	    print("Listening now: ")
-            audio = r.listen(source, timeout = 1) #better timeout
+            audio = r.listen(source, timeout = 5)
             print("Stopped Listening")
-            text = r.recognize_google(audio, grammar=text_grammar)
-            rospy.loginfo("Recognized text: %s", text)
+            text = r.recognize_google(audio)
+            print("Recognized text: %s", text)
             text_publisher.publish(text)  # Publishing the recognized text
 
     except sr.UnknownValueError:
@@ -71,6 +72,14 @@ def stop_robot():
     motion_publisher.publish(motion_command)  # Publishing stop command
 
 if __name__ == '__main__':
+    text_grammar = """
+	    # Command format: "Move <direction> by <distance> units"
+	    # e.g., "Move left by ten units", "Move right by five units"
+	    direction = "left" | "right"
+	    distance = "one" | "two" | "three" | "four" | "five" | "six" | "seven" | "eight" | "nine" | "ten" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
+	    units = "units"
+	    command = "move" (direction "by" distance units | direction distance units)
+	"""
     rospy.init_node('voice_commands2', anonymous=True)
     text_publisher = rospy.Publisher(
         '/recognized_text', String, queue_size=1)  # Publishing text
@@ -80,14 +89,5 @@ if __name__ == '__main__':
     
     text_subscriber = rospy.Subscriber('/recognized_text',String, process_voice_command)
     motion_publisher = rospy.Publisher( '/cmd_vel', Twist, queue_size=1)  # Publishing movement commands
-
-    text_grammar = """
-    # Command format: "Move <direction> by <distance> units"
-    # e.g., "Move left by ten units", "Move right by five units"
-    direction = "left" | "right"
-    distance = "one" | "two" | "three" | "four" | "five" | "six" | "seven" | "eight" | "nine" | "ten" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
-    units = "units"
-    command = "move" (direction "by" distance units | direction distance units)
-	"""
 
     rospy.spin()
