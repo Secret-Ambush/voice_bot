@@ -51,27 +51,35 @@ def process_voice_command(text_msg):
         digit = digit_mapping[digit_text]
         rospy.loginfo("Recognized digit: %s", digit)
             
-        # Use the extracted digit as the linear.x value
-          # Scale the value if needed
 
     if "left" in text:
         rospy.loginfo("Command: Left")
-        motion_command.angular.z = 0.2  
-	motion_command.linear.x = float(digit) / 10.0
+        motion_command.angular.z = 0.2
+	if digit_text in digit_mapping:  
+		motion_command.linear.x = float(digit) / 10.0
+	else:
+		motion_command.linear.x = 0.0
+		
         # Publishing movement commands
         motion_publisher.publish(motion_command)
 
     elif "right" in text:
         rospy.loginfo("Command: Right")
         motion_command.angular.z = -0.2
-	motion_command.linear.x = float(digit) / 10.0
+	if digit_text in digit_mapping:  
+		motion_command.linear.x = float(digit) / 10.0
+	else:
+		motion_command.linear.x = 0.0
         # Publishing movement commands
         motion_publisher.publish(motion_command)
 
     elif "straight" in text:
         rospy.loginfo("Command: Straight") 
         motion_command.angular.z = 0.0
-	motion_command.linear.x = float(digit) / 10.0
+	if digit_text in digit_mapping:  
+		motion_command.linear.x = float(digit) / 10.0
+	else:
+		motion_command.linear.x = 0.0
         # Publishing movement commands
         motion_publisher.publish(motion_command)
 
