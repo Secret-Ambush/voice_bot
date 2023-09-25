@@ -19,7 +19,7 @@ def speech_to_text_callback(event):
 	    print("Listening now: ")
             audio = r.listen(source, timeout = 1) #better timeout
             print("Stopped Listening")
-            text = r.recognize_google(audio)
+            text = r.recognize_google(audio, grammar=text_grammar)
             rospy.loginfo("Recognized text: %s", text)
             text_publisher.publish(text)  # Publishing the recognized text
 
@@ -80,4 +80,14 @@ if __name__ == '__main__':
     
     text_subscriber = rospy.Subscriber('/recognized_text',String, process_voice_command)
     motion_publisher = rospy.Publisher( '/cmd_vel', Twist, queue_size=1)  # Publishing movement commands
+
+    text_grammar = """
+    # Command format: "Move <direction> by <distance> units"
+    # e.g., "Move left by ten units", "Move right by five units"
+    direction = "left" | "right"
+    distance = "one" | "two" | "three" | "four" | "five" | "six" | "seven" | "eight" | "nine" | "ten" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
+    units = "units"
+    command = "move" (direction "by" distance units | direction distance units)
+	"""
+
     rospy.spin()
