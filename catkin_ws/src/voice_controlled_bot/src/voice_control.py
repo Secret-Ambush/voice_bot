@@ -4,6 +4,7 @@ import rospy
 from std_msgs.msg import String
 import speech_recognition as sr
 from geometry_msgs.msg import Twist
+import re
 
 motion_command = Twist()
 motion_publisher = None  
@@ -36,28 +37,41 @@ def process_voice_command(text_msg):
     global motion_command, motion_publisher
 
     text = text_msg.data
+    digit_match = re.search(r'\b(one|two|three|four|five|six|seven|eight|nine|ten|1|2|3|4|5|6|7|8|9|10)\b', text)
+    digit_text = digit_match.group(0)
+
+        # Map the extracted text to numeric values
+    digit_mapping = {
+            "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+            "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
+            "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10
+        }
+
+    if digit_text in digit_mapping:
+        digit = digit_mapping[digit_text]
+        rospy.loginfo("Recognized digit: %s", digit)
+            
+        # Use the extracted digit as the linear.x value
+          # Scale the value if needed
 
     if "left" in text:
         rospy.loginfo("Command: Left")
-        
-        motion_command.linear.x = 0.0
         motion_command.angular.z = 0.2  
+	motion_command.linear.x = float(digit) / 10.0
         # Publishing movement commands
         motion_publisher.publish(motion_command)
 
     elif "right" in text:
         rospy.loginfo("Command: Right")
-       
-        motion_command.angular.z = -0.2  
-        motion_command.linear.x = 0.0
+        motion_command.angular.z = -0.2
+	motion_command.linear.x = float(digit) / 10.0
         # Publishing movement commands
         motion_publisher.publish(motion_command)
 
     elif "straight" in text:
-        rospy.loginfo("Command: Straight")
-        
-        motion_command.linear.x = 0.2  
+        rospy.loginfo("Command: Straight") 
         motion_command.angular.z = 0.0
+	motion_command.linear.x = float(digit) / 10.0
         # Publishing movement commands
         motion_publisher.publish(motion_command)
 
