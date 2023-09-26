@@ -37,7 +37,7 @@ def process_voice_command(text_msg):
     global motion_command, motion_publisher
 
     text = text_msg.data
-    digit_match = re.search(r'\b(1|2|3|4|5|6|7|8|9|10)\b', text)
+    digit_match = re.search(r'\b([1-9]|10|1[1-9]|20|30)\b', text)
     digit_text = digit_match.group(0)
 
         # Map the extracted text to numeric values
@@ -95,12 +95,12 @@ def stop_robot():
 
 if __name__ == '__main__':
     text_grammar = """
-	    # Command format: "Move <direction> by <distance> units"
-	    # e.g., "Move left by ten units", "Move right by five units"
-	    direction = "left" | "right"
-	    distance = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
-	    units = "units"
-	    command = "move" (direction "by" distance units | direction distance units)
+    # Command format: "Move <direction> by <distance> units"
+    # e.g., "Move left by ten units", "Move right by five units", "Turn left", "Turn right", "Stop", "Move straight"
+    direction = "left" | "right" | "straight"
+    distance = /([1-9]|10|1[1-9]|20|30)/  # Matches numbers from 1 to 30
+    units = "units"
+    command = ("move" direction "by" distance units | "turn" direction | "stop" | "move" direction )
 	"""
     rospy.init_node('voice_commands2', anonymous=True)
     text_publisher = rospy.Publisher(
