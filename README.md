@@ -1,6 +1,6 @@
 # Voice Controlled Robot with ROS 🤖
 
-This documentation provides an overview of a Python script for controlling a robot using voice commands through ROS (Robot Operating System). The script utilizes the `speech_recognition` library to recognize voice input and ROS for robot control.
+This documentation provides an overview of a Python script for controlling a robot using voice commands with updated grammar through ROS (Robot Operating System). The script utilizes the `speech_recognition` library to recognize voice input and ROS for robot control.
 
 ## Prerequisites
 
