@@ -131,5 +131,9 @@ if __name__ == '__main__':
 
 That's it! You now have a voice-controlled robot using ROS and Python.
 
+## Customization
+
+You can customize this code by modifying the text_grammar to recognize specific voice commands and adjusting the robot's motion commands based on your requirements. Additionally, you can extend the code to handle more complex voice commands and add error handling as needed.
+
 
 Please note that you should customize the handling of specific voice commands within the `process_voice_command` function to match the behaviour of your robot. Additionally, make sure that the ROS topics used in the script (`/recognized_text` and `/cmd_vel`) are correctly configured for your robot's setup.
