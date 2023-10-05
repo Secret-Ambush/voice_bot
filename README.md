@@ -131,7 +131,19 @@ if __name__ == '__main__':
     # ...
 ```
 
-- The main script initializes the ROS node, sets up publishers and subscribers, and starts the ROS spin loop.
+Grammar included to make commands follow a particular syntax:
+
+```python
+text_grammar = """
+    # Command format: "Move <direction> by <distance> units"
+    # e.g., "Move left by ten units", "Move right by five units", "Turn left", "Turn right", "Stop", "Move straight"
+    direction = "left" | "right" | "straight"
+    distance = /([1-9]|10|1[1-9]|20|30)/  # Matches numbers from 1 to 30
+    units = "units"
+    command = ("move" direction "by" distance units | "turn" direction | "stop" | "move" direction )
+	"""
+```
+- The main script has the grammar, initializes the ROS node, sets up publishers and subscribers, and starts the ROS spin loop.
 
 ## Usage
 
