@@ -47,7 +47,7 @@ from geometry_msgs.msg import Twist
 
 - The script starts by importing necessary libraries and ROS message types.
 
-### Initializing Global Variables
+### Initializing some Global Variables
 
 ```python
 motion_command = Twist()
