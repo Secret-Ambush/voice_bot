@@ -17,17 +17,16 @@ def speech_to_text_callback(event):
     r.grammar = text_grammar
 
     try:
-        with sr.Microphone() as source:
+	with sr.Microphone() as source:
 		print("Listening now: ")
-		audio = r.listen(source, timeout = 2)
+		audio = r.listen(source, timeout=2)
 		print("Stopped Listening")
-		text = r.recognize_google(audio, show_all = True)
+		text = r.recognize_google(audio, show_all=True)
 
-		# Extract 'alternative' list
-		alternative_list = text[1].get('alternative', [])
+		alternative_list = text.get('alternative', [])
 
 		# Iterating to find text with numeric digits
-		selected_text = None
+		selected_text = ""
 		for item in alternative_list:
 			transcript = item.get('transcript', '')
 			if any(char.isdigit() for char in transcript):
@@ -37,15 +36,15 @@ def speech_to_text_callback(event):
 		# If no text with numeric digits found, select the first one
 		if selected_text is None and alternative_list:
 			selected_text = alternative_list[0].get('transcript', '')
-	
+
 		print("Selected Text:", selected_text)
-	
-    		text_publisher.publish(selected_text)  # Publishing the recognized text
+
+	text_publisher.publish(selected_text)  # Publishing the recognized text
 
     except sr.UnknownValueError:
         rospy.logwarn("Could not recognize speech")
 
-    except sr.RequestError as e:
+    except Exception as e:
         rospy.logerr("Speech recognition error: ", e)
         
     # rospy.sleep(2)  
@@ -72,7 +71,7 @@ def process_voice_command(text_msg):
 		if digit_text in digit_mapping:
 			digit = digit_mapping[digit_text]
 			linear_value = float(digit) / 10.0
-			rospy.loginfo("Recognized digit: ", digit)
+			rospy.loginfo("Recognized digit: %s", digit)
 		
     else:
         linear_value = 0.0
