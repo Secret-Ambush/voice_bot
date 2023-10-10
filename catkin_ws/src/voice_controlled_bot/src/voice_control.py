@@ -17,29 +17,29 @@ def speech_to_text_callback(event):
     r.grammar = text_grammar
 
     try:
-	with sr.Microphone() as source:
-		print("Listening now: ")
-		audio = r.listen(source, timeout=2)
-		print("Stopped Listening")
-		text = r.recognize_google(audio, show_all=True)
+        with sr.Microphone() as source:
+            print("Listening now: ")
+            audio = r.listen(source, timeout=2)
+            print("Stopped Listening")
+            text = r.recognize_google(audio, show_all=True)
 
-		alternative_list = text.get('alternative', [])
+            alternative_list = text.get('alternative', [])
 
-		# Iterating to find text with numeric digits
-		selected_text = ""
-		for item in alternative_list:
-			transcript = item.get('transcript', '')
-			if any(char.isdigit() for char in transcript):
-				selected_text = transcript
-				break
+            # Iterating to find text with numeric digits
+            selected_text = ""
+            for item in alternative_list:
+                transcript = item.get('transcript', '')
+                if any(char.isdigit() for char in transcript):
+                    selected_text = transcript
+                    break
 
-		# If no text with numeric digits found, select the first one
-		if selected_text is None and alternative_list:
-			selected_text = alternative_list[0].get('transcript', '')
+            # If no text with numeric digits found, select the first one
+            if selected_text is None and alternative_list:
+                selected_text = alternative_list[0].get('transcript', '')
 
-		print("Selected Text:", selected_text)
+            print("Selected Text:", selected_text)
 
-	text_publisher.publish(selected_text)  # Publishing the recognized text
+        text_publisher.publish(selected_text)  # Publishing the recognized text
 
     except sr.UnknownValueError:
         rospy.logwarn("Could not recognize speech")
@@ -56,10 +56,10 @@ def process_voice_command(text_msg):
     digit_match = re.search(r'\b([1-9]|10|1[1-9]|20|30)\b', text)
 
     if digit_match:
-		digit_text = digit_match.group(0)
+        digit_text = digit_match.group(0)
 
 		# Map the extracted text to numeric values
-		digit_mapping = {
+        digit_mapping = {
 		"1": 1, "2": 2, "3": 3, "4": 4, "5": 5,
 		"6": 6, "7": 7, "8": 8, "9": 9, "10": 10,
 		"11": 11, "12": 12, "13": 13, "14": 14, "15": 15,
@@ -68,10 +68,10 @@ def process_voice_command(text_msg):
 		"26": 26, "27": 27, "28": 28, "29": 29, "30": 30
 		}
 		
-		if digit_text in digit_mapping:
-			digit = digit_mapping[digit_text]
-			linear_value = float(digit) / 10.0
-			rospy.loginfo("Recognized digit: %s", digit)
+        if digit_text in digit_mapping:
+            digit = digit_mapping[digit_text]
+            linear_value = float(digit) / 10.0
+            rospy.loginfo("Recognized digit: %s", digit)
 		
     else:
         linear_value = 0.0
@@ -80,8 +80,8 @@ def process_voice_command(text_msg):
     if "left" in text:
         rospy.loginfo("Command: Left")
         motion_command.angular.z = 0.2
-	motion_command.linear.x = linear_value
-		
+        motion_command.linear.x = linear_value
+
         # Publishing movement commands
         motion_publisher.publish(motion_command)
 
