@@ -77,6 +77,7 @@ def process_voice_command(text_msg):
 		digit = int(digit_match.group(0))
 		linear_value = float(digit) / 10.0
 		rospy.loginfo("Recognized digit: %s", digit)
+		
 	
 	else:
 		linear_value = 0.0
