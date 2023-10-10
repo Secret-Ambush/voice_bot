@@ -22,6 +22,7 @@ def speech_to_text_callback(event):
 			audio = r.listen(source, timeout=2)
 			print("Stopped Listening")
 			text = r.recognize_google(audio, show_all=True)
+			print(text)
 		
 		alternative_list = text.get('alternative', [])
 		
@@ -42,10 +43,10 @@ def speech_to_text_callback(event):
 		text_publisher.publish(selected_text)  # Publishing the recognized text
 	
 	except sr.UnknownValueError:
-	rospy.logwarn("Could not recognize speech")
+		rospy.logwarn("Could not recognize speech")
 	
 	except Exception as e:
-	rospy.logerr("Speech recognition error: ", e)
+		rospy.logerr("Speech recognition error: ", e)
 	
 	# rospy.sleep(2)  
 
@@ -72,8 +73,8 @@ def process_voice_command(text_msg):
 	
 	'''
 	
-	digit = (int)digit_match
-	if digit:
+	if digit_match:
+		digit = int(digit_match.group(0))
 		linear_value = float(digit) / 10.0
 		rospy.loginfo("Recognized digit: %s", digit)
 	
