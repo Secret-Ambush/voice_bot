@@ -1,0 +1,17 @@
+The error message you provided appears to be related to a problem during the build process of a ROS (Robot Operating System) workspace, specifically in a Catkin package. Let's break down the error message:
+
+1. "Make Error at /opt/ros/kinetic/share/catkin/cake/catkin_package.cmake:108 (message)": This line is indicating that there's an error during the "make" process, and it's originating from a CMake file related to the Catkin package.
+
+2. "catkin package) called with unused arguments: rospy": This error message is telling you that there is a problem with the "catkin_package" function call in your CMakeLists.txt file. It seems that you are calling "catkin_package" with an argument "rospy" that is not recognized or needed in this context.
+
+3. "Call stack (most recent call first)": This part of the error message is showing you the stack trace, indicating the sequence of function calls that led to the error. It tells you that the error started from the "catkin_package" function in your CMakeLists.txt file.
+
+4. "/opt/ros/kinetic/share/catkin/cake/catkin_package.cmake:102(_catkin_package)": This line indicates the specific file and line number in the Catkin package where the error is originating.
+
+5. "dist_turtlebot/CMakelists.txt:103 (catkin_package)": This line points to your own package's CMakeLists.txt file, indicating that the error is in this file on line 103 where "catkin_package" is called.
+
+6. "- Configuring incomplete, errors occurred!": This line indicates that the configuration of your ROS workspace is incomplete due to errors.
+
+To resolve this issue, you should review the CMakeLists.txt file in the "dist_turtlebot" package, specifically at line 103 where you are calling "catkin_package." Check if you are passing unnecessary or incorrect arguments to the "catkin_package" function, and make sure it's properly configured according to your package's dependencies.
+
+Additionally, it's important to make sure that your ROS environment is set up correctly for your specific ROS version (in this case, "kinetic"). Make sure all the necessary dependencies are installed and that your workspace is sourced properly.
