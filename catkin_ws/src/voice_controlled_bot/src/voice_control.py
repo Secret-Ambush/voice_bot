@@ -5,6 +5,7 @@ from std_msgs.msg import String
 import speech_recognition as sr
 from geometry_msgs.msg import Twist
 import re
+import traceback
 
 motion_command = Twist()
 motion_publisher = None  
@@ -42,11 +43,14 @@ def speech_to_text_callback(event):
 		
 		text_publisher.publish(selected_text)  # Publishing the recognized text
 	
-	except sr.UnknownValueError:
-		rospy.logwarn("Could not recognize speech")
-	
-	except Exception as e:
-		rospy.logerr("Speech recognition error: ", e)
+	 	except sr.UnknownValueError:
+		    rospy.logwarn("Could not recognize speech")
+		    stop_robot()
+
+		except Exception as e:
+		    rospy.logerr("Speech recognition error: %s", str(e))
+			rospy.logerr(traceback.format_exc())
+		    stop_robot()
 	
 	# rospy.sleep(2)  
 
@@ -63,12 +67,12 @@ def process_voice_command(text_msg):
 	
 	# Map the extracted text to numeric values
 	digit_mapping = {
-	"one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-	"six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-	"eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15,
-	"sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20,
-	"twenty-one": 21, "twenty-two": 22, "twenty-three": 23, "twenty-four": 24, "twenty-five": 25,
-	"twenty-six": 26, "twenty-seven": 27, "twenty-eight": 28, "twenty-nine": 29, "thirty": 30
+	"1": 1, "2": 2, "3": 3, "4": 4, "5": 5,
+	"6": 6, "7": 7, "8": 8, "9": 9, "10": 10,
+	"11": 11, "12": 12, "13": 13, "14": 14, "15": 15,
+	"16": 16, "17": 17, "18": 18, "19": 19, "20": 20,
+	"21": 21, "22": 22, "23": 23, "24": 24, "25": 25,
+	"26": 26, "27": 27, "28": 28, "29": 29, "30": 30
 	}
 	
 	'''
