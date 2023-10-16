@@ -5,7 +5,6 @@ from std_msgs.msg import String
 import speech_recognition as sr
 from geometry_msgs.msg import Twist
 import re
-import traceback
 
 motion_command = Twist()
 motion_publisher = None  
@@ -30,27 +29,26 @@ def speech_to_text_callback(event):
 		# Iterating to find text with numeric digits
 		selected_text = ""
 		for item in alternative_list:
-			transcript = item.get('transcript', '')
-			if any(char.isdigit() for char in transcript):
-				selected_text = transcript
-				break
+		    transcript = item.get('transcript', '')
+		    if any(char.isdigit() for char in transcript):
+		        selected_text = transcript
+		        break
 		
 		# If no text with numeric digits found, select the first one
-		if selected_text is None and alternative_list:
-			selected_text = alternative_list[0].get('transcript', '')
+		if not selected_text and alternative_list:
+		    selected_text = alternative_list[0].get('transcript', '')
 		
 		print("Selected Text:", selected_text)
 		
 		text_publisher.publish(selected_text)  # Publishing the recognized text
 	
-	 	except sr.UnknownValueError:
-		    rospy.logwarn("Could not recognize speech")
-		    stop_robot()
-
-		except Exception as e:
-			rospy.logerr("Speech recognition error: %s", str(e))
-			rospy.logerr(f"Speech recognition error: {str(e)}")
-		    stop_robot()
+	except sr.UnknownValueError:
+		rospy.logwarn("Could not recognize speech")
+		stop_robot()
+	
+	except Exception as e:
+		rospy.logerr(f"Speech recognition error: {str(e)}")
+		stop_robot()
 	
 	# rospy.sleep(2)  
 
@@ -67,12 +65,12 @@ def process_voice_command(text_msg):
 	
 	# Map the extracted text to numeric values
 	digit_mapping = {
-    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
-    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
-    "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15,
-    "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20,
-    "twenty-one": 21, "twenty-two": 22, "twenty-three": 23, "twenty-four": 24, "twenty-five": 25,
-    "twenty-six": 26, "twenty-seven": 27, "twenty-eight": 28, "twenty-nine": 29, "thirty": 30
+	    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+	    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
+	    "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15,
+	    "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20,
+	    "twenty-one": 21, "twenty-two": 22, "twenty-three": 23, "twenty-four": 24, "twenty-five": 25,
+	    "twenty-six": 26, "twenty-seven": 27, "twenty-eight": 28, "twenty-nine": 29, "thirty": 30
 	}
  
 	'''
@@ -80,11 +78,11 @@ def process_voice_command(text_msg):
 	if digit_match:
 		digit = int(digit_match.group(0))
 		linear_value = float(digit) / 10.0
-		rospy.loginfo("Recognized digit: %s", digit)
-		
-	
+		rospy.loginfo("Recognized digit: ", digit)
 	else:
 		linear_value = 0.0
+
+	print("Linear Value: ", linear_value)
 	
 	
 	if "left" in text:
