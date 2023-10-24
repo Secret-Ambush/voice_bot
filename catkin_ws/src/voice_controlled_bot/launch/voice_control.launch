@@ -1,10 +1,13 @@
 <launch>
-  <!-- Start the microphone driver (adjust parameters as needed) -->
-  <!-- <node pkg="audio_common" type="audio_capture" name="audio_capture" output="screen">
-    <param name="device" type="string" value="/dev/audio"/>
-  </node> -->
+  <arg name="rviz" default="false"/>
 
-  <!-- Start the speech recognition node -->
-  <node pkg="voice_controlled_bot" type="voice_control.py" name="voice_commands" output="screen">
+  <!-- This section includes other launch files or nodes -->
+  <include file="$(find turtlebot2i_bringup)/launch/minimal.launch"/>
+
+  <!-- This section handles RViz (conditional) -->
+  <include if="$(arg rviz)" file="$(find turtlebot2i_bringup)/launch/rviz.launch"/>
+
+  <!-- Add the new node element for voice control -->
+  <node pkg="voice_bot" type="voice_control2.py" name="voice_commands2" output="screen">
   </node>
 </launch>
