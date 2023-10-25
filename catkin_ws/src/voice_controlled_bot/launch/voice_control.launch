@@ -1,12 +1,4 @@
 <launch>
-  <arg name="rviz" default="true"/>
-
-  <!-- This section includes other launch files or nodes -->
-  <include file="$(find turtlebot2i_bringup)/launch/minimal.launch"/>
-
-  <!-- This section handles RViz (conditional) -->
-  <include if="$(arg rviz)" file="$(find turtlebot2i_bringup)/launch/rviz.launch"/>
-
   <!-- Add the new node element for voice control -->
   <node pkg="voice_bot" type="voice_control2.py" name="voice_commands2" output="screen">
   </node>
