@@ -35,7 +35,7 @@ def speech_to_text_callback(event):
 				break
 		
 		# If no text with numeric digits found, select the first one
-		if selected_text is None and alternative_list:
+		if selected_text == '' and alternative_list:
 			selected_text = alternative_list[0].get('transcript', '')
 		
 		print("Selected Text:", selected_text)
@@ -63,24 +63,59 @@ def process_voice_command(text_msg):
 		rospy.loginfo("Recognized digit: %s", digit)
 	else:
 		linear_value = 0.0
+
+	linear_velocity = 0.1  # Initial linear velocity
+	distance_to_travel = linear_value  # Distance to move
 	
 	if "left" in text:
 		rospy.loginfo("Command: Left")
-		motion_command.angular.z = 0.2
-		motion_command.linear.x = linear_value
-		motion_publisher.publish(motion_command)
+		angular_velocity = 0.1  # Initial angular velocity for turning
+		linear_velocity = 0.1
+		desired_angle = 90  # Desired angle in degrees (e.g., 90-degree turn)
+		
+		while desired_angle > 0:
+		    desired_angle -= abs(angular_velocity)  # Decrease the absolute value
+		    motion_command.angular.z = angular_velocity
+		    motion_publisher.publish(motion_command)
+		    rospy.sleep(0.1)
+			
+		while distance_to_travel > 0:
+		    distance_to_travel -= linear_velocity
+		    motion_command.linear.x = linear_velocity
+		    motion_publisher.publish(motion_command)
+		    rospy.sleep(0.1)
+			
+		stop_robot()
 	
 	elif "right" in text:
 		rospy.loginfo("Command: Right")
-		motion_command.angular.z = -0.2
-		motion_command.linear.x = linear_value
-		motion_publisher.publish(motion_command)
+		angular_velocity = -0.1  # Initial angular velocity for turning
+		linear_velocity = 0.1
+		desired_angle = 90  # Desired angle in degrees (e.g., 90-degree turn)
+		
+		while desired_angle > 0:
+		    desired_angle -= abs(angular_velocity)  # Decrease the absolute value
+		    motion_command.angular.z = angular_velocity
+		    motion_publisher.publish(motion_command)
+		    rospy.sleep(0.1)
+			
+		while distance_to_travel > 0:
+		    distance_to_travel -= linear_velocity
+		    motion_command.linear.x = linear_velocity
+		    motion_publisher.publish(motion_command)
+		    rospy.sleep(0.1)
+			
+		stop_robot()
 	
 	elif "straight" in text:
 		rospy.loginfo("Command: Straight")
 		motion_command.angular.z = 0.0
-		motion_command.linear.x = linear_value
-		motion_publisher.publish(motion_command)
+		while distance_to_travel > 0:
+		    distance_to_travel -= linear_velocity
+		    motion_command.linear.x = linear_velocity
+		    motion_publisher.publish(motion_command)
+		    rospy.sleep(0.1)
+		stop_robot()
 	
 	elif "stop" in text:
 		rospy.loginfo("Command: Stop")
