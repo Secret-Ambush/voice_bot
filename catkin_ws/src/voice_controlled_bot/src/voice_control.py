@@ -59,13 +59,11 @@ def process_voice_command(text_msg):
 	# digit mapping approach (tedious)
 	if digit_match:
 		digit = int(digit_match.group(0))
-		linear_value = float(digit) / 10.0
+		distance_to_travel = float(digit) / 10.0
 		rospy.loginfo("Recognized digit: %s", digit)
 	else:
-		linear_value = 0.0
+		distance_to_travel = 0.0
 
-	linear_velocity = 0.1  # Initial linear velocity
-	distance_to_travel = linear_value  # Distance to move
 	
 	if "left" in text:
 		rospy.loginfo("Command: Left")
@@ -110,6 +108,8 @@ def process_voice_command(text_msg):
 	elif "straight" in text:
 		rospy.loginfo("Command: Straight")
 		motion_command.angular.z = 0.0
+		linear_velocity = 0.1
+
 		while distance_to_travel > 0:
 		    distance_to_travel -= linear_velocity
 		    motion_command.linear.x = linear_velocity
