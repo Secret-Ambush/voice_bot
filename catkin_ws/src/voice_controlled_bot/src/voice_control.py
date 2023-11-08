@@ -86,24 +86,32 @@ def process_voice_command(text_msg):
 		stop_robot()
 	
 	elif "right" in text:
-		rospy.loginfo("Command: Right")
-		angular_velocity = -0.1  # Initial angular velocity for turning
-		linear_velocity = 0.1
-		desired_angle = 90  # Desired angle in degrees (e.g., 90-degree turn)
-		
-		while desired_angle > 0:
-		    desired_angle -= abs(angular_velocity)  # Decrease the absolute value
-		    motion_command.angular.z = angular_velocity
-		    motion_publisher.publish(motion_command)
-		    rospy.sleep(0.1)
-			
-		while distance_to_travel > 0:
-		    distance_to_travel -= linear_velocity
-		    motion_command.linear.x = linear_velocity
-		    motion_publisher.publish(motion_command)
-		    rospy.sleep(0.1)
-			
-		stop_robot()
+	    rospy.loginfo("Command: Right")
+	    angular_velocity = -0.1  # Initial angular velocity for turning
+	    desired_angle = 90  # Desired angle in degrees (e.g., 90-degree turn)
+	
+	    while desired_angle > 0 and not rospy.is_shutdown():
+	        motion_command.angular.z = angular_velocity
+	        motion_publisher.publish(motion_command)
+	        rospy.sleep(0.1)
+	        desired_angle -= abs(angular_velocity)  # Decrease the absolute value
+	
+	    motion_command.angular.z = 0.0  # Stop the angular motion
+	    motion_publisher.publish(motion_command)
+	
+	    if distance_to_travel > 0:  # If there's a distance to travel after turning
+	        linear_velocity = 0.1  # Define your linear velocity here
+	
+	        while distance_to_travel > 0 and not rospy.is_shutdown():
+	            motion_command.linear.x = linear_velocity
+	            motion_publisher.publish(motion_command)
+	            rospy.sleep(0.1)
+	            distance_to_travel -= linear_velocity
+	
+	        motion_command.linear.x = 0.0  # Stop the linear motion
+	        motion_publisher.publish(motion_command)
+	    else:
+	        stop_robot()
 	
 	elif "straight" in text:
 		rospy.loginfo("Command: Straight")
