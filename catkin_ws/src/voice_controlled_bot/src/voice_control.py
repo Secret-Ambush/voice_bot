@@ -66,15 +66,12 @@ def process_voice_command(text_msg):
 	
 	
 	if digit_match:
-		digit = int(digit_match.group(0))
-		#linear_value = float(digit) / 10.0
-		#rospy.loginfo("Recognized digit: ", str(digit))
-		linear_value = digit
-	else:
-		linear_value = 0
+		distance_to_travel = int(digit_match.group(0))
 
-	print("Linear Value: ", linear_value)
-	distance_to_travel = linear_value
+	else:
+		distance_to_travel = 0
+
+	print("Linear Value: ", distance_to_travel)
 	linear_velocity = 0.1
 	
 	
