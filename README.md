@@ -32,6 +32,9 @@ Before running the script, make sure you have the following installed:
 - `speech_recognition` Python library
 - Appropriate ROS packages (e.g., `std_msgs`, `geometry_msgs`)
 
+Bot used:
+- Turtlebot2i
+
 ## Script Overview
 
 The Python script (`voice_control.py`) listens to voice commands from a microphone and translates them into robot motion commands. Here's a breakdown of the script:
