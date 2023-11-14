@@ -64,22 +64,24 @@ def process_voice_command(text_msg):
 	text = text_msg.data
 	digit_match = re.search(r'\b([1-9]|10|1[1-9]|20|30)\b', text)
 	
+	
 	if digit_match:
 		digit = int(digit_match.group(0))
-		linear_value = float(digit) / 10.0
+		#linear_value = float(digit) / 10.0
 		#rospy.loginfo("Recognized digit: ", str(digit))
+		linear_value = digit
 	else:
-		linear_value = 0.0
+		linear_value = 0
 
 	print("Linear Value: ", linear_value)
 	distance_to_travel = linear_value
-	linear_velocity = 0.3
+	linear_velocity = 0.1
 	
 	
 	if "left" in text:
 		rospy.loginfo("Command: Left")
 		angular_velocity = 0.5
-		desired_angle = 90
+		desired_angle = 18
 
 		while desired_angle > 0 and not rospy.is_shutdown():
 			motion_command.angular.z = angular_velocity
@@ -102,14 +104,14 @@ def process_voice_command(text_msg):
 	elif "right" in text:
 		rospy.loginfo("Command: Right")
 		angular_velocity = -0.5
-		desired_angle = 90
+		desired_angle = 18
 
 		while desired_angle > 0 and not rospy.is_shutdown():
 			motion_command.angular.z = angular_velocity
 			motion_publisher.publish(motion_command)
 			rospy.sleep(0.1)
 			desired_angle -= abs(angular_velocity) 
-	
+
 			motion_command.angular.z = 0.0  # Stop the angular motion
 			motion_publisher.publish(motion_command)
 
@@ -129,10 +131,10 @@ def process_voice_command(text_msg):
 		motion_command.angular.z = 0.0
 
 		while distance_to_travel > 0 and not rospy.is_shutdown():
-			motion_command.linear.x = linear_velocity
-			motion_publisher.publish(motion_command)
-			rospy.sleep(0.1)
-			distance_to_travel -= linear_velocity
+				motion_command.linear.x = linear_velocity
+				motion_publisher.publish(motion_command)
+				rospy.sleep(0.1)
+				distance_to_travel -= linear_velocity
 		
 		motion_command.linear.x = 0.0
 		motion_publisher.publish(motion_command)
