@@ -5,22 +5,44 @@ from std_msgs.msg import String
 import speech_recognition as sr
 from geometry_msgs.msg import Twist
 import re
+import pygame
 
 motion_command = Twist()
 motion_publisher = None  
 text_publisher = None  
 
+def playsound(file_path):
+    pygame.init()
+    pygame.mixer.init()
+    try:
+        pygame.mixer.music.load(file_path)
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(10)
+    except pygame.error as e:
+        print("Cannot load or play the file: "+ file_path)
+    finally:
+        pygame.mixer.music.stop()
+        pygame.mixer.quit()
+        pygame.quit()
+
+
 def speech_to_text_callback(event):
 	global text_publisher  # Declare text_publisher as global
-	
+	if flag:
+		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio.mp3")
+	else:
+		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio5.mp3")
+	flag = False
 	r = sr.Recognizer()
 	r.grammar = text_grammar
 	
 	try:
 		with sr.Microphone() as source:
 			print("Listening now: ")
-			audio = r.listen(source, timeout=2)
+			audio = r.listen(source, timeout=3)
 			print("Stopped Listening")
+			playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio2.mp3")
 			text = r.recognize_google(audio, show_all=True)
 			print(text)
 		
@@ -32,8 +54,8 @@ def speech_to_text_callback(event):
 		for item in alternative_list:
 			transcript = item.get('transcript', '')
 			if any(char.isdigit() for char in transcript):
-			    selected_text = transcript
-			    break
+				selected_text = transcript
+				break
 	
 		# If no text with numeric digits found, select the first one
 		if selected_text == '' and alternative_list:
@@ -45,18 +67,20 @@ def speech_to_text_callback(event):
 
 	
 	except sr.UnknownValueError:
+		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio3.mp3")
 		rospy.logwarn("Could not recognize speech")
 		stop_robot()
 
 	except sr.RequestError as e:
+		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio3.mp3")
 		print("Could not request results: "+ str(e))	
 		stop_robot()
 
 	except Exception as e:
+		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio3.mp3")
 		rospy.logerr("Speech recognition error: "+ str(e))
 		stop_robot()
 	
-	# rospy.sleep(2)  
 
 def process_voice_command(text_msg):
 	global motion_command, motion_publisher
@@ -80,6 +104,8 @@ def process_voice_command(text_msg):
 		angular_velocity = 0.5
 		desired_angle = 18
 
+		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio4.mp3")
+
 		while desired_angle > 0 and not rospy.is_shutdown():
 			motion_command.angular.z = angular_velocity
 			motion_publisher.publish(motion_command)
@@ -97,11 +123,14 @@ def process_voice_command(text_msg):
 
 		motion_command.linear.x = 0.0  
 		motion_publisher.publish(motion_command)
+		speech_to_text_callback()
 	
 	elif "right" in text:
 		rospy.loginfo("Command: Right")
 		angular_velocity = -0.5
 		desired_angle = 18
+
+		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio4.mp3")
 
 		while desired_angle > 0 and not rospy.is_shutdown():
 			motion_command.angular.z = angular_velocity
@@ -121,11 +150,14 @@ def process_voice_command(text_msg):
 
 		motion_command.linear.x = 0.0
 		motion_publisher.publish(motion_command)
+		speech_to_text_callback()
 
 	
 	elif "straight" in text:
 		rospy.loginfo("Command: Straight") 
 		motion_command.angular.z = 0.0
+
+		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio4.mp3")
 
 		while distance_to_travel > 0 and not rospy.is_shutdown():
 				motion_command.linear.x = linear_velocity
@@ -135,6 +167,7 @@ def process_voice_command(text_msg):
 		
 		motion_command.linear.x = 0.0
 		motion_publisher.publish(motion_command)
+		speech_to_text_callback()
 	
 	elif "stop" in text:
 		rospy.loginfo("Command: Stop") 
@@ -149,6 +182,7 @@ def stop_robot():
 	motion_command.linear.x = 0.0
 	motion_command.angular.z = 0.0
 	motion_publisher.publish(motion_command)
+	speech_to_text_callback()
 
 if __name__ == '__main__':
 
@@ -164,9 +198,8 @@ if __name__ == '__main__':
 	rospy.init_node('voice_commands2', anonymous=True)
 	text_publisher = rospy.Publisher(
 	'/recognized_text', String, queue_size=1)  # Publishing text
-	
-	# Creating a timer 
-	timer = rospy.Timer(rospy.Duration(5), speech_to_text_callback)
+	flag = True
+	speech_to_text_callback()
 	
 	text_subscriber = rospy.Subscriber('/recognized_text',String, process_voice_command)
 	motion_publisher = rospy.Publisher( '/cmd_vel_mux/input/switch', Twist, queue_size=1)  # Publishing movement commands
