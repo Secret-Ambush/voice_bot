@@ -8,11 +8,16 @@ import re
 import pygame
 from elevenlabs import voices, generate
 import io
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.getenv("API_KEY")
 
 motion_command = Twist()
 motion_publisher = None  
 text_publisher = None  
-client = OpenAI(api_key = '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')
+client = OpenAI(api_key)
 
 
 def playsound(text):
