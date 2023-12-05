@@ -5,6 +5,9 @@ from std_msgs.msg import String
 import speech_recognition as sr
 from geometry_msgs.msg import Twist
 import re
+from openai import OpenAI
+
+client = OpenAI(api_key = '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')
 
 motion_command = Twist()
 motion_publisher = None  
@@ -14,7 +17,10 @@ def speech_to_text_callback(event):
 	global text_publisher  # Declare text_publisher as global
 	
 	r = sr.Recognizer()
-	r.grammar = text_grammar
+	#r.grammar = text_grammar
+	r.energy_threshold = 4000
+	# dynamic energy compensation lowers the energy threshold dramatically to a point where the SpeechRecognizer never stops recording.
+	r.dynamic_energy_threshold = False
 	
 	try:
 		with sr.Microphone() as source:

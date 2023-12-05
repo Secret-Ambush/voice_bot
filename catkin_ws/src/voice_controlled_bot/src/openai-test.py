@@ -1,14 +1,33 @@
 from openai import OpenAI
+import pygame
+from elevenlabs import voices, generate
+import io
 
-client = OpenAI(api_key = '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')
+client = OpenAI(api_key = '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')
 
+def speak(text):
+    audio = generate(text, voice="Bella")
+    pygame.init()
+    pygame.mixer.init()
+    try:
+        sound = pygame.mixer.Sound(io.BytesIO(audio))
+        sound.play()
+        while pygame.mixer.get_busy():
+            pygame.time.Clock().tick(10)
+    except pygame.error as e:
+        print("Cannot play the audio")
+    finally:
+        pygame.mixer.quit()
+        pygame.quit()
+        
 completion = client.chat.completions.create(
   model="gpt-3.5-turbo",
   messages=[
     {"role": "system", "content": "You are a bot."},
-    {"role": "user", "content": "Generate a short simple salutation eager for the human to direct you"}
+    {"role": "user", "content": "Generate a simple sentence to say that you are moving left"}
   ]
 )
 
 response = completion.choices[0].message.content
 print(response)
+speak(response)
