@@ -2,8 +2,12 @@ from openai import OpenAI
 import pygame
 from elevenlabs import voices, generate
 import io
+import os
+from dotenv import load_dotenv
 
-client = OpenAI(api_key = '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')
+load_dotenv()
+api_key = os.getenv("API_KEY")
+client = OpenAI(api_key)
 
 def speak(text):
     audio = generate(text, voice="Bella")
