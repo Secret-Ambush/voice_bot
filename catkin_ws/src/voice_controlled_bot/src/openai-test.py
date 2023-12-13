@@ -1,3 +1,4 @@
+import openai
 from openai import OpenAI
 import pygame
 from elevenlabs import voices, generate
@@ -7,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.getenv("API_KEY")
-client = OpenAI(api_key)
+openai.api_key = api_key
 
 def speak(text):
     audio = generate(text, voice="Bella")
@@ -24,7 +25,7 @@ def speak(text):
         pygame.mixer.quit()
         pygame.quit()
         
-completion = client.chat.completions.create(
+completion = openai.chat.completions.create(
   model="gpt-3.5-turbo",
   messages=[
     {"role": "system", "content": "You are a bot."},

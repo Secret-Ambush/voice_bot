@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from openai import OpenAI
+import openai
 import rospy
 from std_msgs.msg import String
 import speech_recognition as sr
@@ -13,12 +13,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.getenv("API_KEY")
+openai.api_key = api_key
 
 motion_command = Twist()
 motion_publisher = None  
 text_publisher = None  
-client = OpenAI(api_key)
-
 
 def playsound(text):
     audio = generate(text, voice="Bella")
@@ -36,7 +35,7 @@ def playsound(text):
         pygame.quit()
         
 def createtext(prompting):
-	completion = client.chat.completions.create(
+	completion = openai.chat.completions.create(
 	model="gpt-3.5-turbo",
 	messages=[
 		{"role": "system", "content": "You are a bot."},
@@ -49,12 +48,14 @@ def createtext(prompting):
 	playsound(response)
 
 
-def speech_to_text_callback(event):
+def speech_to_text_callback():
 	global text_publisher  # Declare text_publisher as global
 	if flag:
 		createtext("Generate a short simple salutation eager for the human to direct you")
 	else:
 		createtext("Generate one very short informal sentence to show that you are ready to listen")
+	
+	rospy.sleep(1)
 	flag = False
 	r = sr.Recognizer()
 	# r.grammar = text_grammar
