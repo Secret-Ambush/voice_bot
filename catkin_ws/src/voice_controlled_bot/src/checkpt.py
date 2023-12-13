@@ -32,8 +32,8 @@ def speech_to_text_callback(event):
 		for item in alternative_list:
 			transcript = item.get('transcript', '')
 			if any(char.isdigit() for char in transcript):
-			    selected_text = transcript
-			    break
+				selected_text = transcript
+				break
 	
 		# If no text with numeric digits found, select the first one
 		if selected_text == '' and alternative_list:

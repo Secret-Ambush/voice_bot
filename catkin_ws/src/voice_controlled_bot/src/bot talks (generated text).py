@@ -145,6 +145,7 @@ def process_voice_command(text_msg):
 
 		motion_command.linear.x = 0.0  
 		motion_publisher.publish(motion_command)
+		rospy.sleep(1)
 		speech_to_text_callback()
 	
 	elif "right" in text:
@@ -172,9 +173,9 @@ def process_voice_command(text_msg):
 
 		motion_command.linear.x = 0.0
 		motion_publisher.publish(motion_command)
+		rospy.sleep(1)
 		speech_to_text_callback()
 
-	
 	elif "straight" in text:
 		rospy.loginfo("Command: Straight") 
 		motion_command.angular.z = 0.0
@@ -189,6 +190,7 @@ def process_voice_command(text_msg):
 		
 		motion_command.linear.x = 0.0
 		motion_publisher.publish(motion_command)
+		rospy.sleep(1)
 		speech_to_text_callback()
 	
 	elif "stop" in text:
