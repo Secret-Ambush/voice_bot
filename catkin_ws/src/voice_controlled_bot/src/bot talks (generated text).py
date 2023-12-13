@@ -6,6 +6,7 @@ import speech_recognition as sr
 from geometry_msgs.msg import Twist
 import re
 import pygame
+import elevenlabs
 from elevenlabs import voices, generate
 import io
 import os
@@ -14,6 +15,9 @@ from dotenv import load_dotenv
 load_dotenv()
 api_key = os.getenv("API_KEY")
 openai.api_key = api_key
+
+api_key2 = os.getenv("API_KEY_Eleven")
+elevenlabs.set_api_key(api_key2)
 
 motion_command = Twist()
 motion_publisher = None  
