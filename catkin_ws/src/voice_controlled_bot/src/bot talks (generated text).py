@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 api_key = os.getenv("API_KEY")
-openai.api_key = api_key
+
 
 api_key2 = os.getenv("API_KEY_Eleven")
 elevenlabs.set_api_key(api_key2)
@@ -50,7 +50,6 @@ def createtext(prompting):
 	response = completion.choices[0].message.content
 	print(response)
 	playsound(response)
-
 
 def speech_to_text_callback():
 	global text_publisher  # Declare text_publisher as global
@@ -100,7 +99,7 @@ def speech_to_text_callback():
 
 	except sr.RequestError as e:
 		createtext("Generate a simple sentence to say that you did not understand")
-		print("Could not request results: "+ str(e))	
+		print("Could not request results: "+ str(e))
 		stop_robot()
 
 	except Exception as e:
@@ -226,8 +225,7 @@ if __name__ == '__main__':
 	"""
 	
 	rospy.init_node('voice_commands2', anonymous=True)
-	text_publisher = rospy.Publisher(
-	'/recognized_text', String, queue_size=1)  # Publishing text
+	text_publisher = rospy.Publisher('/recognized_text', String, queue_size=1)  # Publishing text
 	flag = True
 	speech_to_text_callback()
 	

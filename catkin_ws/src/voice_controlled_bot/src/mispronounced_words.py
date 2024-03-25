@@ -43,11 +43,24 @@ def createtext(prompting):
 	response = completion.choices[0].message.content
 	print(response)
 	playsound(response)
+ 
+def misspelled(prompting):
+	completion = openai.chat.completions.create(
+	model="gpt-3.5-turbo",
+	messages=[
+		{"role": "user", "content": prompting}
+		]
+	)
+	
+	response = completion.choices[0].message.content
+	return response
 
 def process_voice_command(text_msg):
     global motion_command, motion_publisher
 
     text = text_msg
+    
+    misspelled(f"Here's a command given by the user - {text_msg}. There should be ")
     digit_match = re.search(r'\b([1-9]|10|1[1-9]|20|30)\b', text)
 
     if digit_match:
