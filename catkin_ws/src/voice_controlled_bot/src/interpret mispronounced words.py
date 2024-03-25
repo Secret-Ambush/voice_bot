@@ -27,7 +27,7 @@ print(interpret_command_with_chatgpt(sample_command, api_key))
 
 
 '''
-POSSIBLE PROMPT -
+POSSIBLE PROMPT (Needs some modification to include into code)-
 
 Objective: Develop a language model capable of interpreting informal or formal voice commands, potentially containing mispronunciations or spelling errors, intended for navigation. The model should accurately discern the intended direction (e.g., 'go straight', 'move forward', 'turn right', 'turn left') and distance (when specified) from these commands. The output should be in a standardized format, highlighting both direction and magnitude (e.g., 'straight 10', 'left 20', 'right 5'), to facilitate easy interpretation and subsequent action.
 
