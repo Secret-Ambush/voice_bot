@@ -124,8 +124,35 @@ def process_voice_command(text_msg):
 	print("Linear Value: ", distance_to_travel)
 	linear_velocity = 0.1
 	
+	if "postition a" or "Position A" in text:
+		rospy.loginfo("Command: Moving to Position A")
+		distance_to_travel = 10
+		angular_velocity = 0.5
+		desired_angle = 18
+
+		createtext("Generate a simple sentence to say that you are moving to position A")
+
+		while desired_angle > 0 and not rospy.is_shutdown():
+			motion_command.angular.z = angular_velocity
+			motion_publisher.publish(motion_command)
+			rospy.sleep(0.1)
+			desired_angle -= abs(angular_velocity) 
+
+			motion_command.angular.z = 0.0  
+			motion_publisher.publish(motion_command)
+
+		while distance_to_travel > 0 and not rospy.is_shutdown():
+			motion_command.linear.x = linear_velocity
+			motion_publisher.publish(motion_command)
+			rospy.sleep(0.1)
+			distance_to_travel -= linear_velocity
+
+		motion_command.linear.x = 0.0  
+		motion_publisher.publish(motion_command)
+		rospy.sleep(1)
+		speech_to_text_callback()
 	
-	if "left" in text:
+	elif "left" in text:
 		rospy.loginfo("Command: Left")
 		angular_velocity = 0.5
 		desired_angle = 18
