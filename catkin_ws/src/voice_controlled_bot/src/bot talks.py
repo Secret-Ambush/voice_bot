@@ -27,7 +27,7 @@ def playsound(file_path):
         pygame.quit()
 
 
-def speech_to_text_callback(event):
+def speech_to_text_callback():
 	global text_publisher  # Declare text_publisher as global
 	if flag:
 		playsound("catkin_ws/src/voice_controlled_bot/src/assets/generated_audio.mp3")
