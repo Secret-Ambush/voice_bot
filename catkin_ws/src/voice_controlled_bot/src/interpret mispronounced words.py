@@ -1,29 +1,43 @@
+import openai
 from openai import OpenAI
+import pygame
+import io
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 api_key = os.getenv("API_KEY")
 
-client = OpenAI(api_key)
-
-def interpret_command_with_chatgpt(command, openai_api_key):
+def interpret_command_with_chatgpt(command):
     try:
-        prompt_text = f"Interpret this command into a standardized navigation format: '{command}'. Include direction and distance (default to 0cm if unspecified)."
-
-        response = client.completions.create(engine="text-davinci-003",
-        prompt=prompt_text,
-        temperature=0.5, 
-        max_tokens=50,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0)
+        prompt_text = f"""Perform the following operations on the provided {command} given by a human that involves direction and distance:
+            You should determine the direction as straight, left, right, or stop.
+            Present your response ONLY in the format (direction by distance).
+            If no distance is specified in the command, indicate the distance as 0cm.
+            If the command is turn around or some synonym, your output should be turn left 360 degrees.
+            If the direction is backward, specify the direction as 'straight' with a negative distance.
+            In the case of diagonal movement, the response should be 'turn left 15 degrees and move straight specified units'.
+            Please make sure to rectify any potential spelling errors or homophone mistakes.
+        """
+        
+        completion = openai.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a bot."},
+            {"role": "user", "content": prompt_text}
+            ]
+        )
+        
+        response = completion.choices[0].message.content
+        return response
 
         # Process and return the response text
-        return response.choices[0].text.strip()
     except Exception as e:
         print(f"An error occurred: {e}")
         return "Error processing command"
 
 sample_command = "Move strait ahead by ten centimeters"
-print(interpret_command_with_chatgpt(sample_command, api_key))
+print(interpret_command_with_chatgpt(sample_command))
 
 
 '''
