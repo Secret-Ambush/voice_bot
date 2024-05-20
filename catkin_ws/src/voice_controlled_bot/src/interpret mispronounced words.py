@@ -1,43 +1,42 @@
-import openai
-from openai import OpenAI
-import pygame
-import io
 import os
 from dotenv import load_dotenv
+from openai import OpenAI
 
 load_dotenv()
-api_key = os.getenv("API_KEY")
+
+client = OpenAI(
+  api_key=os.getenv("API_KEY"),
+)
+
 
 def interpret_command_with_chatgpt(command):
     try:
-        prompt_text = f"""Perform the following operations on the provided {command} given by a human that involves direction and distance:
-            You should determine the direction as straight, left, right, or stop.
-            Present your response ONLY in the format (direction by distance).
-            If no distance is specified in the command, indicate the distance as 0cm.
-            If the command is turn around or some synonym, your output should be turn left 360 degrees.
-            If the direction is backward, specify the direction as 'straight' with a negative distance.
-            In the case of diagonal movement, the response should be 'turn left 15 degrees and move straight specified units'.
-            Please make sure to rectify any potential spelling errors or homophone mistakes.
+        prompt_text = f"""Perform the following operations on the provided command, which is: '{command}'. The command involves direction and distance:
+        - Determine the direction as straight, left, right, or stop.
+        - Present your response ONLY in the format (direction by distance).
+        - If no distance is specified, indicate the distance as 0cm.
+        - If the command is 'turn around' or some synonym, your output should be 'turn left 360 degrees'.
+        - If the direction is backward, specify the direction as 'straight' with a negative distance.
+        - In the case of diagonal movement, the response should be 'turn left 15 degrees and move straight specified units'.
+        Please rectify any potential spelling errors or homophone mistakes.
         """
-        
-        completion = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a bot."},
-            {"role": "user", "content": prompt_text}
-            ]
-        )
-        
-        response = completion.choices[0].message.content
-        return response
 
-        # Process and return the response text
+        response = client.completions.create(
+            model="gpt-4o",  # Specify the model engine here
+            prompt=prompt_text,
+            max_tokens=150
+        )
+
+        return response.choices[0].text.strip()
+
     except Exception as e:
         print(f"An error occurred: {e}")
         return "Error processing command"
 
-sample_command = "Move strait ahead by ten centimeters"
+sample_command = "Move straight ahead by ten centimeters"
 print(interpret_command_with_chatgpt(sample_command))
+
+
 
 
 '''
